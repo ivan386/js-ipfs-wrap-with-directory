@@ -1,0 +1,43 @@
+﻿<html>
+	<head>
+		<title>ipfs wrap with directory</title>
+		<style>
+			a{display: block}
+		</style>
+		<script src="ipfs-wrap-with-directory.js"></script>
+		<script>
+			function qvalue(query)
+			{
+				return document.querySelector(query).value;
+			}
+		
+			function append_link(cid, file_name)
+			{
+				file_name = file_name ? file_name : "index.html";
+				
+				if (cid)
+				{
+					var link = wrap_with_directory(cid, file_name)
+					
+					var a = document.body.appendChild(document.createElement('a'));
+					a.textContent = link;
+					a.href = link;
+					document.body.appendChild(document.createTextNode(link));
+					document.location.hash = "!" + cid + "/" + file_name;
+					document.querySelector('cid').value = cid;
+					document.querySelector('name').value = name;
+				}
+			}
+		</script>
+	</head>
+	<body>
+		cid: <input id="cid" type="text">
+		name: <input id="name" type="text" value="index.html">
+		<button onclick='append_link(qvalue("#cid"), qvalue("#name"))'>wrap with directory</button>
+		
+		<script>
+			var [cid, name] = document.location.hash.split('#').pop().split("!").pop().split("/");
+			append_link(cid, name)
+		</script>
+	</body>
+</html>
