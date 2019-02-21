@@ -85,6 +85,34 @@ function base58_decode(b58, buffer)
 	return buffer
 }
 
+function pack_files(files, packed)
+{
+	for (var file in files)
+		if ( typeof(files[file]) == "object" )
+			packed = pack_file(packed, pack_data("\x01\x70\x00", pack_files(files[file], []), []), file);
+		else
+			packed = pack_file(packed, base58_decode(files[file], []), file);
+	
+	console.log(packed.length)
+	return pack_dir(packed);
+}
+
+function wrap_files_with_directory(files)
+{
+	var packed = [];
+	
+	return "/ipfs/u"+(
+		btoa(
+			String.fromCharCode(...
+				pack_data("\x01\x70\x00",
+					pack_files(files, packed)
+				,	[]
+				)
+			)
+		).replace(/\+/g,"-").replace(/\//g,"_").replace(/=/g,"")
+	) + "/"
+}
+
 function wrap_with_directory(cid, file_name)
 {
 	return "/ipfs/u"+(
