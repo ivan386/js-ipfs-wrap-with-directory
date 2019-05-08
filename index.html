@@ -2,9 +2,12 @@
 	<head>
 		<title>ipfs wrap with directory</title>
 		<style>
+			body{white-space: pre-line}
 			a{display: block}
 		</style>
 		<script src="ipfs-wrap-with-directory.js"></script>
+		<base href="https://cloudflare-ipfs.com/">
+		
 		<script>
 			function qvalue(query)
 			{
@@ -28,16 +31,32 @@
 					document.querySelector('name').value = name;
 				}
 			}
+			
+			function append_link_files(files)
+			{
+				if (files)
+				{
+					var link = wrap_files_with_directory(files)
+					
+					var a = document.body.appendChild(document.createElement('a'));
+					a.textContent = link;
+					a.href = link;
+					document.body.appendChild(document.createTextNode(link));
+				}
+			}
 		</script>
 	</head>
 	<body>
 		cid: <input id="cid" type="text">
 		name: <input id="name" type="text" value="index.html">
 		<button onclick='append_link(qvalue("#cid"), qvalue("#name"))'>wrap with directory</button>
-		
+		json: <textarea id="json" type="text"></textarea>
+		<button onclick='append_link_files(JSON.parse(qvalue("#json")))'>wrap with directory</button>
 		<script>
 			var [cid, name] = document.location.hash.split('#').pop().split("!").pop().split("/");
 			append_link(cid, name)
 		</script>
+		
+		
 	</body>
 </html>
